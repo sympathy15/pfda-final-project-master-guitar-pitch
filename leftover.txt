@@ -1,0 +1,35 @@
+if a_button_x < mouse_x < a_button_x + button_wh and a_button_y < mouse_y < a_button_y + button_wh:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                make_button(screen, orange, a_button_x, a_button_y, button_wh, text[0])
+                #pygame.draw.rect(screen, (255, 0, 0), (button_x, button_y, button_wh, button_wh))
+            else:
+                make_button(screen, white, a_button_x, a_button_y, button_wh, text[0])
+        else:
+            make_button(screen, orange, a_button_x, a_button_y, button_wh, text[0])
+
+        if ab_button_x < mouse_x < ab_button_x + button_wh and ab_button_y < mouse_y < ab_button_y + button_wh:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                make_button(screen, orange, ab_button_x, ab_button_y, button_wh, text[0])
+                #pygame.draw.rect(screen, (255, 0, 0), (button_x, button_y, button_wh, button_wh))
+            else:
+                make_button(screen, white, ab_button_x, ab_button_y, button_wh, text[0])
+        else:
+            make_button(screen, orange, ab_button_x, ab_button_y, button_wh, text[0])
+
+        if b_button_x < mouse_x < b_button_x + button_wh and b_button_y < mouse_y < b_button_y + button_wh:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                make_button(screen, orange, b_button_x, b_button_y, button_wh, text[0])
+                #pygame.draw.rect(screen, (255, 0, 0), (button_x, button_y, button_wh, button_wh))
+            else:
+                make_button(screen, white, b_button_x, b_button_y, button_wh, text[0])
+        else:
+            make_button(screen, orange, b_button_x, b_button_y, button_wh, text[0])
+
+        if c_button_x < mouse_x < c_button_x + button_wh and c_button_y < mouse_y < c_button_y + button_wh:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                make_button(screen, orange, c_button_x, c_button_y, button_wh, text[0])
+                #pygame.draw.rect(screen, (255, 0, 0), (button_x, button_y, button_wh, button_wh))
+            else:
+                make_button(screen, white, c_button_x, c_button_y, button_wh, text[0])
+        else:
+            make_button(screen, orange, c_button_x, c_button_y, button_wh, text[0])
