@@ -2,7 +2,10 @@ import pygame
 import random
 import time
 
+attempts = 5
+
 def main():
+    global attempts
     pygame.init()
     pygame.mixer.init()
     pygame.display.set_caption("Master Guitar Pitch")
@@ -39,7 +42,8 @@ def main():
     ga_button_x, ga_button_y = g_button_x + button_wh + padding, 430
     
     answer = random.randrange(0,13)
-    shuffle = False
+    shuffle = True
+    sound_played = False
 
     EE = pygame.mixer.Sound('guitar-notes/EE.mp3')
     EF = pygame.mixer.Sound('guitar-notes/EF.mp3')
@@ -54,31 +58,6 @@ def main():
     ED = pygame.mixer.Sound('guitar-notes/ED.mp3')
     EEb = pygame.mixer.Sound('guitar-notes/EEb.mp3')
 
-    if answer == 0:
-        EA.play()
-    elif answer == 1:
-        EBb.play()
-    elif answer == 2:
-        EB.play()
-    elif answer == 3:
-        EC.play()
-    elif answer == 4:
-        EDb.play()
-    elif answer == 5:
-        ED.play()
-    elif answer == 6:
-        EEb.play()
-    elif answer == 7:
-        EE.play()
-    elif answer == 8:
-        EF.play()
-    elif answer == 9:
-        EGb.play()
-    elif answer == 10:
-        EG.play()
-    elif answer == 11:
-        EAb.play()
-
     running = True
     while running:
         for event in pygame.event.get():
@@ -89,7 +68,41 @@ def main():
 
         if shuffle == True:
             answer = random.randrange(0,13)
+            sound_played = False
             shuffle = False
+
+    
+        if sound_played == False:
+            if answer == 0:
+                EA.play()
+            elif answer == 1:
+                EBb.play()
+            elif answer == 2:
+                EB.play()
+            elif answer == 3:
+                EC.play()
+            elif answer == 4:
+                EDb.play()
+            elif answer == 5:
+                ED.play()
+            elif answer == 6:
+                EEb.play()
+            elif answer == 7:
+                EE.play()
+            elif answer == 8:
+                EF.play()
+            elif answer == 9:
+                EGb.play()
+            elif answer == 10:
+                EG.play()
+            elif answer == 11:
+                EAb.play()
+
+        sound_played = True
+        font = pygame.font.Font(None, 50)
+        text = f"attempts: {attempts}/5"
+        txt = font.render(text, True, (255,255,255))
+        screen.blit(txt, (10, 10))
         
         shuffle = shuffle or check_mouse(a_button_x, a_button_y, mouse_x, mouse_y, button_wh, event, screen, a_color, white, 0, answer)
         shuffle = shuffle or check_mouse(ab_button_x, ab_button_y, mouse_x, mouse_y, button_wh, event, screen, ab_color, white, 1, answer)
@@ -103,28 +116,51 @@ def main():
         shuffle = shuffle or check_mouse(fg_button_x, fg_button_y, mouse_x, mouse_y, button_wh, event, screen, fg_color, white, 9, answer)
         shuffle = shuffle or check_mouse(g_button_x, g_button_y, mouse_x, mouse_y, button_wh, event, screen, g_color, white, 10, answer)
         shuffle = shuffle or check_mouse(ga_button_x, ga_button_y, mouse_x, mouse_y, button_wh, event, screen, ga_color, white, 11, answer)
-        
+
         pygame.display.flip()
     pygame.quit()
 
 def check_mouse(button_x, button_y, mouse_x, mouse_y, button_wh, event, screen, color, white, num, answer):
     text = ["A", "A#/Bb", "B", "C", "C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab"]
     shuffle = False
+    global attempts
+
 
     if button_x < mouse_x < button_x + button_wh and button_y < mouse_y < button_y + button_wh:
+        
+        
         if event.type == pygame.MOUSEBUTTONDOWN:
             make_button(screen, color, button_x, button_y, button_wh, text[num])
             if answer == num:
                 print("correct")
-                time.sleep(3)
+                make_checkmark(screen)
+                time.sleep(1)
                 shuffle = True
+                attempts = 5
             else:
                 print("incorrect")
+                attempts -= 1
+                make_x(screen)
+                time.sleep(1)
+                if attempts == 0:
+                    shuffle = True 
+                    attempts = 5
         else:
             make_button(screen, white, button_x, button_y, button_wh, text[num])
     else:
         make_button(screen, color, button_x, button_y, button_wh, text[num])
+    
     return shuffle
+
+def make_checkmark(screen):
+    check = pygame.Surface((50,50))
+    check.fill((0,255,0))
+    screen.blit(check, (400,200))
+
+def make_x(screen):
+    x = pygame.Surface((50,50))
+    x.fill((255,49,49))
+    screen.blit(x, (400,200))
 
 def make_button(screen, color, button_x, button_y, button_wh, text):
     large_txt = ["A", "B", "C", "D", "E", "F", "G"]
@@ -135,7 +171,7 @@ def make_button(screen, color, button_x, button_y, button_wh, text):
     pygame.draw.rect(screen, color, (button_x, button_y, button_wh, button_wh))
     txt = font.render(text, True, (0,0,0))
     if text in large_txt:
-        screen.blit(txt, (button_x + 26, button_y + 20))
+        screen.blit(txt, (button_x + 24, button_y + 20))
     else: 
         screen.blit(txt, (button_x + 12, button_y + 35))
 
