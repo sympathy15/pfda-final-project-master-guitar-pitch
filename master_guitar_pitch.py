@@ -6,12 +6,14 @@ attempts = 3
 score = 0
 
 def main():
+    # initializing and necessary values
     global attempts, score
     pygame.init()
     pygame.mixer.init()
     pygame.display.set_caption("Master Guitar Pitch")
     screen = pygame.display.set_mode((800, 600))
     
+    # color values
     white = 255, 255, 255
     a_color = 255, 190, 0
     ab_color = 127, 0, 255
@@ -26,6 +28,7 @@ def main():
     g_color = 255, 85, 0
     ga_color = 0, 128, 255
 
+    # button positions
     padding = 27
     button_wh = 100
     height_a = 350
@@ -36,7 +39,6 @@ def main():
     c_button_x, c_button_y = b_button_x + button_wh + padding, height_a
     cd_button_x, cd_button_y = c_button_x + button_wh + padding, height_a
     d_button_x, d_button_y = cd_button_x + button_wh + padding, height_a
-
     de_button_x, de_button_y = padding, + height_b
     e_button_x, e_button_y = de_button_x + button_wh + padding, height_b
     f_button_x, f_button_y = e_button_x + button_wh + padding, height_b
@@ -49,6 +51,7 @@ def main():
     dot_changed = False
     sound_played = False
 
+    # mp3 files, first letter is the string second letter is the note
     EE = pygame.mixer.Sound('guitar-notes/EE.mp3')
     EF = pygame.mixer.Sound('guitar-notes/EF.mp3')
     EGb = pygame.mixer.Sound('guitar-notes/EGb.mp3')
@@ -122,7 +125,6 @@ def main():
     HED = pygame.mixer.Sound('guitar-notes/HED.mp3')
     HEEb = pygame.mixer.Sound('guitar-notes/HEEb.mp3')
     
-
     E_string = [EE, EF, EGb, EG, EAb, EA, EBb, EB, EC, EDb, ED, EEb]
     A_string = [AA, ABb, AB, AC, ADb, AD, AEb, AE, AF, AGb, AG, AAb]
     D_string = [DD, DEb, DE, DF, DGb, DG, DAb, DA, DBb, DB, DC, DDb]
@@ -132,9 +134,10 @@ def main():
 
     sounds = [E_string, A_string, D_string, G_string, B_string, high_E_string]
     guitar = pygame.image.load("guitar_PNG3361.png").convert_alpha()
-    lives = 3
-
+    
     running = True
+
+    # event loop
     while running:
         for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -144,6 +147,7 @@ def main():
         mouse_x, mouse_y = pygame.mouse.get_pos()
         screen.blit(pygame.transform.scale(guitar, (2048//1.5, 993//1.5)),(0,-100))
 
+        # chooses random string and fret, converts random option to a note with A being 0 and Ab being 11
         if shuffle == True:
             string_i = random.randint(0,5)
             fret_i = random.randint(0,11)
@@ -175,13 +179,16 @@ def main():
             sound_played = False
             shuffle = False
     
+        # plays the sound of the chosen note
         if sound_played == False:
             sounds[answer_sound[0]][answer_sound[1]].play()
             sound_played = True
         
+        # places dot on chosen note
         if dot_changed == False:
             place_dot(screen, answer_sound)
         
+        # displays score
         font = pygame.font.Font(None, 50)
         text = f"score: {score}"
         txt = font.render(text, True, (255,255,255))
@@ -202,18 +209,19 @@ def main():
         make_button(screen, g_color, g_button_x, g_button_y, button_wh, "G")
         make_button(screen, ga_color, ga_button_x, ga_button_y, button_wh, "G#/Ab")
 
-        shuffle = shuffle or check_mouse(a_button_x, a_button_y, mouse_x, mouse_y, button_wh, event, screen, a_color, white, 0, answer)
-        shuffle = shuffle or check_mouse(ab_button_x, ab_button_y, mouse_x, mouse_y, button_wh, event, screen, ab_color, white, 1, answer)
-        shuffle = shuffle or check_mouse(b_button_x, b_button_y, mouse_x, mouse_y, button_wh, event, screen, b_color, white, 2, answer)
-        shuffle = shuffle or check_mouse(c_button_x, c_button_y, mouse_x, mouse_y, button_wh, event, screen, c_color, white, 3, answer)
-        shuffle = shuffle or check_mouse(d_button_x, d_button_y, mouse_x, mouse_y, button_wh, event, screen, d_color, white, 5, answer)
-        shuffle = shuffle or check_mouse(cd_button_x, cd_button_y, mouse_x, mouse_y, button_wh, event, screen, cd_color, white, 4, answer)
-        shuffle = shuffle or check_mouse(de_button_x, de_button_y, mouse_x, mouse_y, button_wh, event, screen, de_color, white, 6, answer)
-        shuffle = shuffle or check_mouse(e_button_x, e_button_y, mouse_x, mouse_y, button_wh, event, screen, e_color, white, 7, answer)
-        shuffle = shuffle or check_mouse(f_button_x, f_button_y, mouse_x, mouse_y, button_wh, event, screen, f_color, white, 8, answer)
-        shuffle = shuffle or check_mouse(fg_button_x, fg_button_y, mouse_x, mouse_y, button_wh, event, screen, fg_color, white, 9, answer)
-        shuffle = shuffle or check_mouse(g_button_x, g_button_y, mouse_x, mouse_y, button_wh, event, screen, g_color, white, 10, answer)
-        shuffle = shuffle or check_mouse(ga_button_x, ga_button_y, mouse_x, mouse_y, button_wh, event, screen, ga_color, white, 11, answer)
+        # the main game mechanic, runs it using appropriate note value after every shuffle
+        shuffle = shuffle or choose_mechanic(a_button_x, a_button_y, mouse_x, mouse_y, button_wh, event, screen, a_color, white, 0, answer)
+        shuffle = shuffle or choose_mechanic(ab_button_x, ab_button_y, mouse_x, mouse_y, button_wh, event, screen, ab_color, white, 1, answer)
+        shuffle = shuffle or choose_mechanic(b_button_x, b_button_y, mouse_x, mouse_y, button_wh, event, screen, b_color, white, 2, answer)
+        shuffle = shuffle or choose_mechanic(c_button_x, c_button_y, mouse_x, mouse_y, button_wh, event, screen, c_color, white, 3, answer)
+        shuffle = shuffle or choose_mechanic(d_button_x, d_button_y, mouse_x, mouse_y, button_wh, event, screen, d_color, white, 5, answer)
+        shuffle = shuffle or choose_mechanic(cd_button_x, cd_button_y, mouse_x, mouse_y, button_wh, event, screen, cd_color, white, 4, answer)
+        shuffle = shuffle or choose_mechanic(de_button_x, de_button_y, mouse_x, mouse_y, button_wh, event, screen, de_color, white, 6, answer)
+        shuffle = shuffle or choose_mechanic(e_button_x, e_button_y, mouse_x, mouse_y, button_wh, event, screen, e_color, white, 7, answer)
+        shuffle = shuffle or choose_mechanic(f_button_x, f_button_y, mouse_x, mouse_y, button_wh, event, screen, f_color, white, 8, answer)
+        shuffle = shuffle or choose_mechanic(fg_button_x, fg_button_y, mouse_x, mouse_y, button_wh, event, screen, fg_color, white, 9, answer)
+        shuffle = shuffle or choose_mechanic(g_button_x, g_button_y, mouse_x, mouse_y, button_wh, event, screen, g_color, white, 10, answer)
+        shuffle = shuffle or choose_mechanic(ga_button_x, ga_button_y, mouse_x, mouse_y, button_wh, event, screen, ga_color, white, 11, answer)
 
         pygame.display.flip()
     pygame.quit()
@@ -684,23 +692,24 @@ def place_dot(screen, answer_sound):
         dot_y = high_e_row
         make_dot(screen, dot_x, dot_y)
 
-
 def make_dot(screen, dot_x, dot_y):
     dot = pygame.Surface((10,10))
     dot.fill((0,255,0))
     screen.blit(dot, (dot_x,dot_y))
 
-def check_mouse(button_x, button_y, mouse_x, mouse_y, button_wh, event, screen, color, white, num, answer):
+def choose_mechanic(button_x, button_y, mouse_x, mouse_y, button_wh, event, screen, color, white, num, answer):
     text = ["A", "A#/Bb", "B", "C", "C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab"]
     shuffle = False
     global attempts, score
 
-    if button_x < mouse_x < button_x + button_wh and button_y < mouse_y < button_y + button_wh:
+    # checks if mouse position is within button parameters
+    if button_x < mouse_x < button_x + button_wh and button_y < mouse_y < button_y + button_wh: 
         
+        # checks if mouse is clicked
         if event.type == pygame.MOUSEBUTTONDOWN:
             make_button(screen, color, button_x, button_y, button_wh, text[num])
             if answer == num:
-                make_checkmark(screen)
+                make_checkmark(screen) # displays checkmark if answer is correct
                 pygame.display.flip()
                 pygame.time.delay(1000)
                 time.sleep(1)
@@ -709,7 +718,7 @@ def check_mouse(button_x, button_y, mouse_x, mouse_y, button_wh, event, screen, 
                 score += 1
             else:
                 attempts -= 1
-                make_x(screen)
+                make_x(screen) # displays x if answer is correct
                 pygame.display.flip()
                 pygame.time.delay(1000)
                 time.sleep(1)
@@ -726,40 +735,32 @@ def check_mouse(button_x, button_y, mouse_x, mouse_y, button_wh, event, screen, 
 
 def make_lives(screen, attempts):
     
+    heart1 = pygame.Surface((50,50))
+    heart2 = pygame.Surface((50, 50))
+    heart3 = pygame.Surface((50, 50))
+
     if attempts == 3:
-        heart1 = pygame.Surface((50,50))
-        heart2 = pygame.Surface((50, 50))
-        heart3 = pygame.Surface((50, 50))
-        heart1.fill((255,49,49))
-        heart2.fill((255,49,49))
-        heart3.fill((255,49,49))
+        heart1 = pygame.image.load("heart.png").convert_alpha()
+        heart2 = pygame.image.load("heart.png").convert_alpha()
+        heart3 = pygame.image.load("heart.png").convert_alpha()
         screen.blit(heart1, (550,10))
         screen.blit(heart2, (610,10))
         screen.blit(heart3, (670,10))
     if attempts == 2:
-        heart1 = pygame.Surface((50,50))
-        heart2 = pygame.Surface((50, 50))
-        heart3 = pygame.Surface((50, 50))
-        heart1.fill((255,49,49))
-        heart2.fill((255,49,49))
+        heart1 = pygame.image.load("heart.png").convert_alpha()
+        heart2 = pygame.image.load("heart.png").convert_alpha()
         heart3.fill((0,0,0))
         screen.blit(heart1, (550,10))
         screen.blit(heart2, (610,10))
         screen.blit(heart3, (670,10))
     if attempts == 1:
-        heart1 = pygame.Surface((50,50))
-        heart2 = pygame.Surface((50, 50))
-        heart3 = pygame.Surface((50, 50))
-        heart1.fill((255,49,49))
+        heart1 = pygame.image.load("heart.png").convert_alpha()
         heart2.fill((0,0,0))
         heart3.fill((0,0,0))
         screen.blit(heart1, (550,10))
         screen.blit(heart2, (610,10))
         screen.blit(heart3, (670,10))
     if attempts == 0:
-        heart1 = pygame.Surface((50,50))
-        heart2 = pygame.Surface((50, 50))
-        heart3 = pygame.Surface((50, 50))
         heart1.fill((0,0,0))
         heart2.fill((0,0,0))
         heart3.fill((0,0,0))
@@ -772,14 +773,12 @@ def make_lives(screen, attempts):
     screen.blit(heart3, (670,10))
 
 def make_checkmark(screen):
-    check = pygame.Surface((50,50))
-    check.fill((0,255,0))
-    screen.blit(check, (368,200))
+    check = pygame.image.load("check.png").convert_alpha()
+    screen.blit(check, (370,260))
 
 def make_x(screen):
-    x = pygame.Surface((50,50))
-    x.fill((255,49,49))
-    screen.blit(x, (368,200))
+    x = pygame.image.load("x.png").convert_alpha()
+    screen.blit(x, (370,260))
 
 def make_button(screen, color, button_x, button_y, button_wh, text):
     large_txt = ["A", "B", "C", "D", "E", "F", "G"]
